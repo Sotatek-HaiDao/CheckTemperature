@@ -11,7 +11,7 @@ namespace TempControl.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
-
+        private static readonly HttpClient singletonHttpClientInstance = new HttpClient();
         public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
@@ -19,22 +19,17 @@ namespace TempControl.Controllers
         }
 
         public async Task<IActionResult> Index()
-        {
-            using(HttpClient httpclient = new HttpClient())
-            {
-                
-                var token = await new DefaultAzureCredential().GetTokenAsync(new Azure.Core.TokenRequestContext(new[] { "https://digitaltwins.azure.net/.default" }));
+        {                
                 var cred = new ManagedIdentityCredential();
                 var client = new DigitalTwinsClient(
                 new Uri(_configuration["DigitalTwinsUrl"]),
                 cred,
                 new DigitalTwinsClientOptions
                 {
-                    Transport = new HttpClientTransport(httpclient)
+                    Transport = new HttpClientTransport(singletonHttpClientInstance)
                 });
                 var data = await client.GetDigitalTwinAsync<dynamic>("Factory");
-                return View(data.ToString());
-            }
+                return View(data.ToString());         
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
