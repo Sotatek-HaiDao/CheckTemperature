@@ -28,8 +28,8 @@ namespace TempControl.Controllers
                 {
                     Transport = new HttpClientTransport(singletonHttpClientInstance)
                 });
-                var data = await client.GetDigitalTwinAsync<dynamic>("Factory");
-                return View(data.ToString());         
+                Azure.Response<dynamic> data = await client.GetDigitalTwinAsync<dynamic>("Factory");
+                return View(data.Value);         
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
