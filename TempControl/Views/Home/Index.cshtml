@@ -6,5 +6,5 @@
     <h1>Temperature</h1>
 </div>
 <div class="text-center">
-    <h1 class="display-4">@Model.Temperature &deg;C</h1>
+    <h1 class="display-4">@String.Format("{0:0.0}",Model.Temperature) &deg;C</h1>
 </div>
